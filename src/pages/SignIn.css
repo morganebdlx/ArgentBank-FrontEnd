@@ -23,6 +23,13 @@
   font-size: 5rem;
 }
 
+.login-loader {
+  display: block;
+  width: 42px;
+  height: 24px;
+  margin: auto;
+}
+
 .input-remember {
   display: flex;
 }
