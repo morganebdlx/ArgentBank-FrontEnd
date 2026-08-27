@@ -8,19 +8,20 @@ import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
 
-  const { login } = useLogin();
+  const { login, isLoading, error } = useLogin();
 
   // const token = useSelector((state) => state.auth.token);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false); // État pour le checkbox "Remember me"
 
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const isLoggedIn = await login(username, password);
+    const isLoggedIn = await login(username, password, rememberMe);
 
     if (isLoggedIn) {
       navigate("/profile"); // redirige vers la page profile
@@ -50,10 +51,16 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div className="input-remember">
-          <input type="checkbox" id="remember-me" />
+          <input type="checkbox"
+                 id="remember-me"
+                 checked={rememberMe}
+                 onChange={(e) => setRememberMe(e.target.checked)} />
           <label htmlFor="remember-me">Remember me</label>
         </div>
-        <button type="submit" className="sign-in-button">Sign In</button>
+        <button type="submit" className="sign-in-button" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign In"}
+        </button>
+        {error && <p className="error">{error}</p>}
       </form>
     </section>
   </main>
