@@ -14,6 +14,12 @@ export const authSlice = createSlice({
       state.isLoggedIn = true;
       state.token = action.payload.token;
     },
+    // action de logout pour mettre à jour le state lors de la déconnexion
+    logoutAction: (state) => {
+      state.isLoggedIn = false;
+      state.token = null;
+      state.user = null;
+    },
     // action de setUser pour mettre à jour l'utilisateur dans le state
     setUser: (state, action) => {
       state.user = action.payload.user;
@@ -22,6 +28,6 @@ export const authSlice = createSlice({
 })
 
 // export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
-export const { loginAction, setUser } = authSlice.actions;
+export const { loginAction, logoutAction, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

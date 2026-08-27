@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import logo from "../assets/argentBankLogo.webp";
 import "./Header.css";
 
-const Header = ({ isLoggedIn, userName }) => (
+const Header = ({ isLoggedIn, userName, onLogout }) => (
   <nav className="main-nav">
     <Link className="main-nav-logo" to="/">
       <img className="main-nav-logo-image" src={logo} alt="Argent Bank Logo" />
@@ -15,7 +15,7 @@ const Header = ({ isLoggedIn, userName }) => (
             <i className="fa fa-user-circle"></i>
             {userName}
           </Link>
-          <Link className="main-nav-item" to="/">
+          <Link className="main-nav-item" to="/" onClick={onLogout}>
             <i className="fa fa-sign-out"></i>
             Sign Out
           </Link>
