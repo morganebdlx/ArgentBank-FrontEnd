@@ -29,10 +29,7 @@ const useLogin = () => {
     // Stockage du token dans le localStorage
      if (rememberMe) {
         localStorage.setItem("token", data.body.token);
-      } else {
-        sessionStorage.setItem("token", data.body.token);
-      }
-
+      } 
       dispatch(loginAction({ token: data.body.token }));
     setIsLoading(false);
 

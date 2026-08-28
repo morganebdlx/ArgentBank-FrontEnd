@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { logoutAction } from "./store/auth/authSlice";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -14,9 +14,8 @@ function App() {
 
   // Fonction pour se déconnecter
   const handleLogout = () => {
-    // Suppression du token du localStorage et du sessionStorage
+    // Suppression du token du localStorage 
     localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
     // Mise à jour de l'état global pour indiquer que l'utilisateur est déconnecté
     dispatch(logoutAction());
   }
@@ -28,7 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/sign-in" />} /> {/* Redirection vers la page de connexion si l'utilisateur n'est pas connecté */}
       </Routes>
       <Footer />
     </BrowserRouter>
