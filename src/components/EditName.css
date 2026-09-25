@@ -1,0 +1,46 @@
+.edit-name-form {
+  color: #333;
+  text-align: center;
+}
+
+.input-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 10px;
+}
+
+.input-line label {
+  width: 90px;
+  text-align: right;
+}
+
+.input-line input {
+  width: 150px;
+  padding: 8px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.form-buttons button {
+  width: 168px;
+  padding: 15px;
+  border: none;
+  border-radius: 3px;
+  background-color: #00bc77;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-top: 15px;
+}

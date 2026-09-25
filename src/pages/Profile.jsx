@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import useProfile from "../hooks/useProfile";
-import useUpdateName from "../hooks/useUpdateName";
 import AccountCard from "../components/AccountCard";
+import EditName from "../components/EditName";
 import "./Profile.css";
 
 const Profile = () => {
@@ -19,20 +19,29 @@ const Profile = () => {
     }
   }, [token, profile]);
 
-  // Utilisation de useState pour gérer le nouvel état du nom de l'utilisateur
-  const [newName, setNewName] = useState("");
 
 
-
-  // Récupération de la fonction updateName depuis le hook useUpdateName
-  const { updateName } = useUpdateName();
+// Utilisation de useState pour gérer l'état d'édition du nom
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <main className="main bg-dark">
+    <main className="main">
       <div className="header">
-        <h1>Welcome back<br />{user ? `${user.firstName} ${user.lastName}` : "..."}!</h1>
-        <button className="edit-button">Edit Name</button>
-      </div>
+        {/* // Vérification si l'utilisateur est en mode édition et si l'utilisateur est défini */}
+        {isEditing && user ? (
+          <EditName
+            user={user}
+            closeForm={() => setIsEditing(false)}
+          />
+        ) : (
+          <>
+    {/* // Affichage du message de bienvenue avec le nom de l'utilisateur */}
+      <h1>Welcome back<br />{user ? `${user.firstName} ${user.lastName}` : ""}!</h1>
+      {/* // Bouton pour passer en mode édition du nom */}
+      <button className="edit-button" onClick={() => setIsEditing(true)} >Edit Name </button>
+    </>
+  )}
+</div>
         <h2 className="sr-only">Accounts</h2>
           <AccountCard title="Argent Bank Checking (x8349)" amount="$2,082.79" description="Available Balance" />
           <AccountCard title="Argent Bank Savings (x6712)" amount="$10,928.42" description="Available Balance" />
