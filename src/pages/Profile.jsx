@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import useProfile from "../hooks/useProfile";
+import useUpdateName from "../hooks/useUpdateName";
 import AccountCard from "../components/AccountCard";
 import "./Profile.css";
 
@@ -17,6 +18,14 @@ const Profile = () => {
       profile(token);
     }
   }, [token, profile]);
+
+  // Utilisation de useState pour gérer le nouvel état du nom de l'utilisateur
+  const [newName, setNewName] = useState("");
+
+
+
+  // Récupération de la fonction updateName depuis le hook useUpdateName
+  const { updateName } = useUpdateName();
 
   return (
     <main className="main bg-dark">
