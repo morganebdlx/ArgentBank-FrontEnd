@@ -1,0 +1,297 @@
+# Version du format de documentation utilisé par Swagger.
+swagger: '2.0'
+
+# Informations affichées en haut de la documentation Swagger.
+info:
+  title: Bank Argent API documentation - Transactions
+  description: Proposed API endpoints for the phase 2 transactions feature
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+# Adresse et préfixe commun à toutes les routes :
+# par exemple, GET /accounts devient http://localhost:3001/api/v1/accounts.
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+
+# Les tags servent à regrouper les routes dans l'interface Swagger.
+tags:
+  - name: Accounts Module
+    description: Endpoints for managing accounts and transactions
+paths:
+  # "paths" contient toutes les routes de l'API.
+  /accounts: # Route pour récupérer la liste des comptes de l'utilisateur.
+    get:
+      # Toutes les routes ci-dessous demandent un jeton Bearer dans l'en-tête
+      # Authorization. Sa définition se trouve dans securityDefinitions.
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Get all accounts
+      description: Returns a list of all accounts for the authenticated user
+      responses:
+        # 200 signifie que la requête a réussi.
+        '200':
+          description: A list of accounts
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountResponse'
+        '401':
+          # 401 : le jeton est absent ou invalide.
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          # 403 : le jeton ne permet pas l'accès.
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /accounts/{accountId}/transactions: # Route pour récupérer la liste des transactions d'un compte.
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Get all transactions for an account
+      description: Returns a list of all transactions for the specified account
+      parameters:
+        # accountId est obligatoire car il fait partie de l'URL.
+        - name: accountId
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: A list of transactions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TransactionResponse'
+        '400':
+          description: Bad request - Invalid account ID format
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden
+        '404':
+          # 404 : le compte demandé par son identifiant n'existe pas.
+          description: Account not found
+        '500':
+          description: Internal server error
+  /accounts/{accountId}/transactions/{transactionId}: # Route pour récupérer le détail d'une transaction.
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Get a specific transaction for an account
+      description: Returns details of a specific transaction for the specified account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Transaction details
+          schema:
+            $ref: '#/definitions/TransactionDetailResponse'
+        '400':
+          description: Bad request - Invalid account or transaction ID format
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden
+        '404':
+          # Une route contenant un identifiant doit prévoir le cas où
+          # la ressource correspondante est introuvable.
+          description: Transaction not found
+        '500':
+          description: Internal server error
+  /accounts/{accountId}/transactions/{transactionId}/category: # Route pour modifier la catégorie d'une transaction.
+    patch:
+      # PATCH modifie seulement une partie d'une ressource existante :
+      # ici, la catégorie de la transaction.
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Update a transaction category
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          # Le corps de la requête contient la nouvelle catégorie.
+          required: true
+          schema:
+            $ref: '#/definitions/CategoryUpdate'
+      responses:
+        '200':
+          description: Updated transaction
+          schema:
+            $ref: '#/definitions/TransactionDetailResponse'
+        '400':
+          # 400 : le corps envoyé ne respecte pas le format CategoryUpdate.
+          description: Bad request - Invalid category update payload
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden
+        '404':
+          description: Account or transaction not found
+        '500':
+          description: Internal server error
+  /accounts/{accountId}/transactions/{transactionId}/note: # Route pour modifier la note d'une transaction.
+    patch:
+      # Même principe que le PATCH précédent, mais pour la note.
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Update a transaction note
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NoteUpdate'
+      responses:
+        '200':
+          description: Updated transaction
+          schema:
+            $ref: '#/definitions/TransactionDetailResponse'
+        '400':
+          # 400 : le corps envoyé ne respecte pas le format NoteUpdate.
+          description: Bad request - Invalid note update payload
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden
+        '404':
+          description: Account or transaction not found
+        '500':
+          description: Internal server error
+  /categories: # Route pour récupérer la liste des catégories de transactions.
+    get:
+      # Cette route fournit les options à afficher dans le menu déroulant
+      # (dropdown) de sélection d'une catégorie.
+      security:
+        - Bearer: []
+      tags:
+        - Accounts Module
+      summary: Get all transaction categories
+      description: Returns the categories available for the transaction category dropdown.
+      responses:
+        '200':
+          description: A list of categories
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CategoryResponse'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+securityDefinitions:
+  # "Bearer" décrit le mécanisme d'authentification réutilisé par les routes.
+  Bearer:
+    type: apiKey
+    # Exemple d'en-tête envoyé par le front : Authorization: Bearer <token>
+    name: Authorization
+    in: header
+definitions:
+  # "definitions" contient des modèles de données réutilisables avec $ref.
+  AccountResponse: # Modèle de données pour un compte bancaire.
+    type: object
+    required:
+      - name
+      - balance
+    properties:
+      name:
+        type: string
+        example: Argent Bank Checking
+      balance:
+        type: number
+        format: double
+        example: 2082.79
+      transactionsCount:
+        type: integer
+        example: 8349
+  TransactionResponse: # Modèle de données pour une transaction.
+    # Version courte d'une transaction, utilisée dans une liste.
+    type: object
+    properties:
+      id:
+        type: string
+      date:
+        type: string
+        format: date
+      description:
+        type: string
+      amount:
+        type: number
+        format: double
+      balance:
+        type: number
+        format: double
+  TransactionDetailResponse: # Modèle de données pour le détail d'une transaction.
+    # allOf réutilise TransactionResponse, puis ajoute les champs affichés
+    # uniquement dans le détail d'une transaction.
+    allOf:
+      - $ref: '#/definitions/TransactionResponse'
+      - type: object
+        properties:
+          type:
+            type: string
+          category:
+            $ref: '#/definitions/CategoryResponse'
+          note:
+            type: string
+  CategoryResponse: # Modèle de données pour une catégorie de transaction.
+    # Une catégorie possède un identifiant technique (id) et un libellé (name)
+    # destiné à être affiché dans le dropdown.
+    type: object
+    properties:
+      id:
+        type: string
+        example: food
+      name:
+        type: string
+        example: Food
+  CategoryUpdate: # Modèle de données pour la modification de la catégorie d'une transaction.
+    # Format attendu par le PATCH /category : seul l'id est envoyé.
+    type: object
+    required:
+      - categoryId
+    properties:
+      categoryId:
+        type: string
+  NoteUpdate: # Modèle de données pour la modification de la note d'une transaction.
+    # Format attendu par le PATCH /note.
+    type: object
+    required:
+      - note
+    properties:
+      note:
+        type: string

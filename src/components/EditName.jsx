@@ -5,13 +5,14 @@ import "./EditName.css";
 
 
 const EditName = ({ user, closeForm }) => {
-  const [userName, setUserName] = useState(user.userName);
+  // Utilisation de useState pour gérer l'état du nom d'utilisateur
+  const [userName, setUserName] = useState(user.userName ?? ""); // initialisation du nom d'utilisateur avec la valeur actuelle ou une chaîne vide si null
   const { updateName, isLoading, error } = useUpdateName();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await updateName({ userName: userName });
+    await updateName(userName);
 
     closeForm();
   };
@@ -26,6 +27,7 @@ const EditName = ({ user, closeForm }) => {
           id="userName"
           type="text"
           value={userName}
+          placeholder="Choose your user name"
           onChange={(event) => setUserName(event.target.value)}
         />
       </div>
