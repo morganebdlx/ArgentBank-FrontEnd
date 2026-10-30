@@ -27,7 +27,19 @@ export const authSlice = createSlice({
   }
 })
 
-// export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
+// Sélecteur : renvoie le nom à afficher.
+// Si userName existe, on l'utilise. Sinon on retombe sur prénom + nom.
+export const selectDisplayName = (state) => {
+  const user = state.auth.user;
+
+  if (!user) return ""; // pas encore connecté / profil pas chargé
+  if (user.userName) return user.userName;
+
+  return [user.firstName, user.lastName]
+    .filter(Boolean) // enlève les valeurs vides, évite d'afficher "null null"
+    .join(" ");
+};
+
 export const { loginAction, logoutAction, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

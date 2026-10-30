@@ -1,25 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import useProfile from "../hooks/useProfile";
 import AccountCard from "../components/AccountCard";
 import EditName from "../components/EditName";
 import "./Profile.css";
 
 const Profile = () => {
 
-  // Récupération du token et de l'utilisateur depuis le store Redux
-  const { profile } = useProfile();
-  const token = useSelector((state) => state.auth.token);
+  // Récupération de l'utilisateur depuis le store Redux
+  // (le profil est chargé par useAuthSession dans App)
   const user = useSelector((state) => state.auth.user);
-
-// Utilisation de useEffect pour appeler la fonction profile lorsque le token change
-  useEffect(() => {
-    if (token) {
-      profile(token);
-    }
-  }, [token, profile]);
-
-
 
 // Utilisation de useState pour gérer l'état d'édition du nom
   const [isEditing, setIsEditing] = useState(false);
